@@ -4,17 +4,18 @@ defmodule Deduplicate.UsersFixtures do
   entities via the `Deduplicate.Users` context.
   """
 
-  @doc """
-  Generate a user.
-  """
+  alias Deduplicate.Users
+  alias Deduplicate.Users.User
+
+  @spec user_fixture(map) :: %User{}
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        age: 42,
-        name: "some name"
+        name: "some name",
+        password: "12345678"
       })
-      |> Deduplicate.Users.create_user()
+      |> Users.create_user()
 
     user
   end
