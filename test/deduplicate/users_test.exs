@@ -2,60 +2,71 @@ defmodule Deduplicate.UsersTest do
   use Deduplicate.DataCase
 
   alias Deduplicate.Users
+  alias Deduplicate.Users.User
 
-  describe "users" do
-    alias Deduplicate.Users.User
-
+  describe "get_user!/1" do
     import Deduplicate.UsersFixtures
 
-    @invalid_attrs %{age: nil, name: nil}
-
-    test "list_users/0 returns all users" do
+    setup do
       user = user_fixture()
-      assert Users.list_users() == [user]
+
+      %{user: user}
     end
 
-    test "get_user!/1 returns the user with given id" do
+    test "with `user_id`, returns the user", %{user: user} do
+      assert Users.get_user!(user.user_id) == user
+    end
+
+    test "with non-existing `user_id`, raises `NoResultsError`" do
+      id = Ecto.UUID.generate()
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Users.get_user!(id)
+      end
+    end
+  end
+
+  describe "create_user/1" do
+    @valid_attrs %{name: "some name", password: "12345678"}
+    @empty_attrs %{}
+
+    test "with valid attrs, creates a user" do
+      assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
+
+      assert user.password_hash != nil
+      assert user.name == @valid_attrs.name
+    end
+
+    test "with empty attrs, returns changeset" do
+      assert {:error, changeset} = Users.create_user(@empty_attrs)
+      assert %{name: _} = errors_on(changeset)
+    end
+  end
+
+  describe "update_user/2" do
+    import Deduplicate.UsersFixtures
+
+    setup do
       user = user_fixture()
-      assert Users.get_user!(user.id) == user
+
+      %{user: user}
     end
 
-    test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{age: 42, name: "some name"}
+    @valid_attrs %{name: "updated name", password: "updated password", is_banned: true}
+    @empty_attrs %{}
 
-      assert {:ok, %User{} = user} = Users.create_user(valid_attrs)
-      assert user.age == 42
-      assert user.name == "some name"
+    test "with valid attrs, updates the user", %{user: user} do
+      assert {:ok, %User{} = updated_user} = Users.update_user(user, @valid_attrs)
+
+      assert updated_user.name == @valid_attrs.name
+      assert updated_user.password_hash != user.password_hash
+      assert updated_user.is_banned == @valid_attrs.is_banned
     end
 
-    test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Users.create_user(@invalid_attrs)
-    end
+    test "with empty attrs, updates the user (without effect)", %{user: user} do
+      assert {:ok, %User{} = updated_user} = Users.update_user(user, @empty_attrs)
 
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      update_attrs = %{age: 43, name: "some updated name"}
-
-      assert {:ok, %User{} = user} = Users.update_user(user, update_attrs)
-      assert user.age == 43
-      assert user.name == "some updated name"
-    end
-
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Users.update_user(user, @invalid_attrs)
-      assert user == Users.get_user!(user.id)
-    end
-
-    test "delete_user/1 deletes the user" do
-      user = user_fixture()
-      assert {:ok, %User{}} = Users.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Users.get_user!(user.id) end
-    end
-
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
-      assert %Ecto.Changeset{} = Users.change_user(user)
+      assert updated_user == user
     end
   end
 end
