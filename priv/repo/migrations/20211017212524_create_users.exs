@@ -3,9 +3,10 @@ defmodule Deduplicate.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users, primary_key: false) do
-      add :id, :binary_id, primary_key: true
+      add :user_id, :binary_id, primary_key: true
       add :name, :string
-      add :age, :integer
+      add :password_hash, :string
+      add :is_banned, :boolean, default: false
 
       timestamps()
     end
