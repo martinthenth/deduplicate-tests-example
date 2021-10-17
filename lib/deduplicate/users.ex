@@ -4,22 +4,9 @@ defmodule Deduplicate.Users do
   """
 
   import Ecto.Query, warn: false
-  alias Deduplicate.Repo
 
   alias Deduplicate.Users.User
-
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
-  def list_users do
-    Repo.all(User)
-  end
+  alias Deduplicate.Repo
 
   @doc """
   Gets a single user.
@@ -35,6 +22,7 @@ defmodule Deduplicate.Users do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_user!(<<_::288>>) :: %User{} | nil
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
@@ -49,10 +37,11 @@ defmodule Deduplicate.Users do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec create_user(map) :: {:ok, %User{}} | {:error, Ecto.Changeset.t()}
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(returning: true)
   end
 
   @doc """
@@ -67,38 +56,10 @@ defmodule Deduplicate.Users do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update_user(%User{}, map) :: {:ok, %User{}} | {:error, Ecto.Changeset.t()}
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
     |> Repo.update()
-  end
-
-  @doc """
-  Deletes a user.
-
-  ## Examples
-
-      iex> delete_user(user)
-      {:ok, %User{}}
-
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_user(%User{} = user) do
-    Repo.delete(user)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
   end
 end
