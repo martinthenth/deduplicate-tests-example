@@ -11,6 +11,23 @@ defmodule Deduplicate.Users do
   @doc """
   Gets a single user.
 
+  Returns `nil` if no record was found.
+
+  ## Examples
+
+      iex> get_user(123)
+      %User{}
+
+      iex> get_user(456)
+      nil
+
+  """
+  @spec get_user(<<_::288>>) :: %User{} | nil
+  def get_user(id), do: Repo.get(User, id)
+
+  @doc """
+  Gets a single user.
+
   Raises `Ecto.NoResultsError` if the User does not exist.
 
   ## Examples
@@ -61,5 +78,22 @@ defmodule Deduplicate.Users do
     user
     |> User.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user.
+
+  ## Examples
+
+      iex> delete_user(user)
+      {:ok, %User{}}
+
+      iex> delete_user(user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec delete_user(%User{}) :: {:ok, %User{}} | {:error, Ecto.Changeset.t()}
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
   end
 end
