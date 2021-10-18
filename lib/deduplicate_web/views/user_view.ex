@@ -1,20 +1,20 @@
 defmodule DeduplicateWeb.UserView do
   use DeduplicateWeb, :view
+
   alias DeduplicateWeb.UserView
 
-  def render("index.json", %{users: users}) do
-    %{data: render_many(users, UserView, "user.json")}
-  end
-
   def render("show.json", %{user: user}) do
-    %{data: render_one(user, UserView, "user.json")}
+    %{
+      data: %{
+        user: render_one(user, UserView, "user.json")
+      }
+    }
   end
 
   def render("user.json", %{user: user}) do
     %{
-      id: user.id,
-      name: user.name,
-      age: user.age
+      user_id: user.user_id,
+      name: user.name
     }
   end
 end
