@@ -21,4 +21,12 @@ defmodule DeduplicateWeb.FallbackController do
     |> put_view(DeduplicateWeb.ErrorView)
     |> render(:"404")
   end
+
+  # This clause is an example of how to handle resources that cannot be found.
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(DeduplicateWeb.ErrorView)
+    |> render(:"400")
+  end
 end
