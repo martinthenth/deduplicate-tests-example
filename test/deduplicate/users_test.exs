@@ -4,6 +4,26 @@ defmodule Deduplicate.UsersTest do
   alias Deduplicate.Users
   alias Deduplicate.Users.User
 
+  describe "get_user/1" do
+    import Deduplicate.UsersFixtures
+
+    setup do
+      user = user_fixture()
+
+      %{user: user}
+    end
+
+    test "with existing `user_id`, returns the user struct", %{user: user} do
+      assert Users.get_user(user.user_id) == user
+    end
+
+    test "with non-existing `user_id`, returns nil" do
+      id = Ecto.UUID.generate()
+
+      assert Users.get_user(id) == nil
+    end
+  end
+
   describe "get_user!/1" do
     import Deduplicate.UsersFixtures
 
@@ -67,6 +87,32 @@ defmodule Deduplicate.UsersTest do
       assert {:ok, %User{} = updated_user} = Users.update_user(user, @empty_attrs)
 
       assert updated_user == user
+    end
+  end
+
+  describe "delete_user/2" do
+    import Deduplicate.UsersFixtures
+
+    setup do
+      user = user_fixture()
+
+      %{user: user}
+    end
+
+    test "with `User`, deletes the user", %{user: user} do
+      assert {:ok, %User{}} = Users.delete_user(user)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Users.get_user!(user.user_id)
+      end
+    end
+
+    test "with deleted `User`, raises `StaleEntryError`", %{user: user} do
+      Users.delete_user(user)
+
+      assert_raise Ecto.StaleEntryError, fn ->
+        Users.delete_user(user)
+      end
     end
   end
 end
