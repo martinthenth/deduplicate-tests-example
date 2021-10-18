@@ -1,4 +1,4 @@
-defmodule DeduplicateWeb.Plugs.Errors do
+defmodule DeduplicateWeb.Plugs.ErrorHelpers do
   @moduledoc """
   Conveniences for rendering error messages in Plugs.
   """
