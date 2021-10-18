@@ -27,7 +27,7 @@ defmodule Deduplicate.UsersTest do
   end
 
   describe "create_user/1" do
-    @valid_attrs %{name: "some name", password: "12345678"}
+    @valid_attrs %{name: "some name", password: "some password"}
     @empty_attrs %{}
 
     test "with valid attrs, creates a user" do
