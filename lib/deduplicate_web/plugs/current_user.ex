@@ -3,7 +3,7 @@ defmodule DeduplicateWeb.Plugs.CurrentUser do
   This Plug provides authorization and connection assigns for `User` data.
   """
   import Plug.Conn
-  import DeduplicateWeb.Plugs.Errors
+  import DeduplicateWeb.Plugs.ErrorHelpers
 
   alias Deduplicate.Users.User
 
