@@ -4,6 +4,7 @@ defmodule DeduplicateWeb.UserControllerTest do
   import Deduplicate.UsersFixtures
   import Deduplicate.Users.SessionsFixtures
   import DeduplicateWeb.AuthenticationTestsMacro
+  import DeduplicateWeb.UserAuthorizationTestsMacro
 
   alias Deduplicate.Users
 
@@ -32,6 +33,7 @@ defmodule DeduplicateWeb.UserControllerTest do
     end
 
     # Authentication tests macro is not necessary for `create/2`.
+    # User authorization tests macro is not necessary for `create/2`.
   end
 
   describe "update/2" do
@@ -75,9 +77,10 @@ defmodule DeduplicateWeb.UserControllerTest do
     end
 
     # Implement authentication test macro.
-    path = Routes.user_path(@endpoint, :delete, "user_id")
+    path = Routes.user_path(@endpoint, :update, "user_id")
 
     test_user_authentication(:post, path)
+    test_user_authorization(:post, path)
   end
 
   describe "delete/2" do
@@ -109,5 +112,6 @@ defmodule DeduplicateWeb.UserControllerTest do
     path = Routes.user_path(@endpoint, :delete, "user_id")
 
     test_user_authentication(:post, path)
+    test_user_authorization(:post, path)
   end
 end
