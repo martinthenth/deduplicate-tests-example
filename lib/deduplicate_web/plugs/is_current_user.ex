@@ -28,11 +28,12 @@ defmodule DeduplicateWeb.Plugs.IsCurrentUser do
   def call(%{params: %{"user_id" => user_id}} = conn, _opts) do
     current_user = conn.assigns.current_user
 
-    with true <- Utilities.is_uuid?(user_id),
-         true <- current_user.user_id == user_id do
+    with {:is_uuid, true} <- {:is_uuid, Utilities.is_uuid?(user_id)},
+         {:is_user, true} <- {:is_user, current_user.user_id == user_id} do
       conn
     else
-      false -> render_error(conn, :forbidden)
+      {:is_uuid, false} -> render_error(conn, :bad_request)
+      {:is_user, false} -> render_error(conn, :forbidden)
     end
   end
 
