@@ -70,4 +70,13 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  # Configure authentication library
+  guardian_secret_key =
+    System.get_env("GUARDIAN_SECRET_KEY") ||
+      raise "environment variable GUARDIAN_SECRET_KEY is missing."
+
+  config :deduplicate, DeduplicateWeb.Guardian,
+    issuer: "deduplicate",
+    secret_key: guardian_secret_key
 end
