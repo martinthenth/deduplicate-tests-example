@@ -15,6 +15,7 @@ defmodule DeduplicateWeb.UserControllerTest do
     @valid_params %{user: %{name: "some name", password: "some password"}}
     @missing_params %{}
 
+    # Regular test.
     test "with valid params, creates a user, renders the user", %{conn: conn} do
       path = Routes.user_path(conn, :create)
       conn = post(conn, path, @valid_params)
@@ -22,15 +23,19 @@ defmodule DeduplicateWeb.UserControllerTest do
       assert %{"user" => _} = json_response(conn, 201)["data"]
     end
 
+    # Regular test.
     test "with missing params, renders error", %{conn: conn} do
       path = Routes.user_path(conn, :create)
       conn = post(conn, path, @missing_params)
 
       assert json_response(conn, 400)
     end
+
+    # Authentication tests macro is not necessary for `create/2`.
   end
 
   describe "update/2" do
+    # The test setup block.
     setup do
       user = user_fixture()
       token = session_fixture(user)
@@ -41,6 +46,7 @@ defmodule DeduplicateWeb.UserControllerTest do
     @valid_params %{user: %{name: "updated name", password: "updated password", is_banned: true}}
     @missing_params %{}
 
+    # Regular test.
     test "with valid params, updates the user, renders the user", %{
       conn: conn,
       user: user,
@@ -54,15 +60,9 @@ defmodule DeduplicateWeb.UserControllerTest do
         |> post(path, @valid_params)
 
       assert %{"user" => _} = json_response(conn, 202)["data"]
-
-      # Verify user is updated with given data.
-      updated_user = Users.get_user!(user.user_id)
-
-      assert updated_user.password_hash != user.password_hash
-      assert updated_user.name == @valid_params.user.name
-      assert updated_user.is_banned == @valid_params.user.is_banned
     end
 
+    # Regular test.
     test "with missing params, renders error", %{conn: conn, user: user, token: token} do
       path = Routes.user_path(conn, :update, user.user_id)
 
@@ -72,18 +72,16 @@ defmodule DeduplicateWeb.UserControllerTest do
         |> post(path, @missing_params)
 
       assert json_response(conn, 400)
-
-      # Verify user was not updated.
-      assert Users.get_user!(user.user_id) == user
     end
 
     # Implement authentication test macro.
-    path = Routes.user_path(@endpoint, :delete, "--user_id")
+    path = Routes.user_path(@endpoint, :delete, "user_id")
 
     test_user_authentication(:post, path)
   end
 
   describe "delete/2" do
+    # The test setup block.
     setup do
       user = user_fixture()
       token = session_fixture(user)
@@ -91,6 +89,7 @@ defmodule DeduplicateWeb.UserControllerTest do
       %{user: user, token: token}
     end
 
+    # Regular test.
     test "with valid params, deletes the user, renders the user", %{
       conn: conn,
       user: user,
@@ -104,15 +103,10 @@ defmodule DeduplicateWeb.UserControllerTest do
         |> post(path)
 
       assert %{"user" => _} = json_response(conn, 202)["data"]
-
-      # Verify user is deleted.
-      assert_raise Ecto.NoResultsError, fn ->
-        Users.get_user!(user.user_id)
-      end
     end
 
-    # Implement authentication test macro.
-    path = Routes.user_path(@endpoint, :delete, "--user_id")
+    # Implement authentication tests macro.
+    path = Routes.user_path(@endpoint, :delete, "user_id")
 
     test_user_authentication(:post, path)
   end
