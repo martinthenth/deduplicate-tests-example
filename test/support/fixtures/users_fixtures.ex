@@ -11,10 +11,7 @@ defmodule Deduplicate.UsersFixtures do
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> Enum.into(%{
-        name: "some name",
-        password: "12345678"
-      })
+      |> Enum.into(%{name: "some name"})
       |> Users.create_user()
 
     user
