@@ -1,19 +1,16 @@
-# Deduplicate
+# Deduplicate Phoenix authentication tests with macros
 
-To start your Phoenix server:
+This repo contains a working example for deduplicating authentication tests in Phoenix by using Elixir `macros`. You can read the accompanying article here:
+- https://medium.com/@m.r.nijboer/deduplicating-authentication-and-authorization-tests-in-elixir-and-phoenix-using-macros-5ed7fe5c282d
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+A summary: The number of authentication and authorization tests for Phoenix controller actions can go into the hundreds and thousands. The problem is that these tests are near-identical, and manually writing and updating these tests is error-prone and laborous. Instead, I offer a solution using Elixir `macros` that generate these tests for us.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+A `macro` contains the authentication tests we need, and adapts to the arguments (e.g. the `route`) we give it. We implement the `macro` in a `ControllerTest`. On running tests with `mix test`, the `macro` expands into the defined tests. 
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Macro definition and implementation.
 
-## Learn more
+- For the `macro` that replaces authentication tests, look in `/test/support/macros/authentication_tests_macro.ex`
+- For the `macro` implementation in a controller, look in `/test/deduplicate_web/controllers/user_controller_test.exs`
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## What can you do with test macros?
+This example repository contains a macro for authentication tests. You could easily adapt this `macro` for authorization tests. Thus, you can test whether `User` is authenticated, but also whether `User` should access a `Post` or `Team` or `Team.Member` object.
