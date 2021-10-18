@@ -57,8 +57,8 @@ defmodule DeduplicateWeb.Plugs.IsCurrentUserTest do
           &IsCurrentUser.call(&1, [])
         ])
 
-      assert json_response(conn, 403)
-      assert json_response(conn, 403)["errors"] != nil
+      assert json_response(conn, 400)
+      assert json_response(conn, 400)["errors"] != nil
     end
 
     test "with missing `user_id`, renders error", %{user: user, token: token} do
