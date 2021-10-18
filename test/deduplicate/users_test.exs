@@ -1,12 +1,12 @@
 defmodule Deduplicate.UsersTest do
   use Deduplicate.DataCase
 
+  import Deduplicate.UsersFixtures
+
   alias Deduplicate.Users
   alias Deduplicate.Users.User
 
   describe "get_user/1" do
-    import Deduplicate.UsersFixtures
-
     setup do
       user = user_fixture()
 
@@ -25,8 +25,6 @@ defmodule Deduplicate.UsersTest do
   end
 
   describe "get_user!/1" do
-    import Deduplicate.UsersFixtures
-
     setup do
       user = user_fixture()
 
@@ -64,8 +62,6 @@ defmodule Deduplicate.UsersTest do
   end
 
   describe "update_user/2" do
-    import Deduplicate.UsersFixtures
-
     setup do
       user = user_fixture()
 
@@ -91,8 +87,6 @@ defmodule Deduplicate.UsersTest do
   end
 
   describe "delete_user/2" do
-    import Deduplicate.UsersFixtures
-
     setup do
       user = user_fixture()
 
