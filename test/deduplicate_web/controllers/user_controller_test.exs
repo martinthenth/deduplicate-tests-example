@@ -2,6 +2,8 @@ defmodule DeduplicateWeb.UserControllerTest do
   use DeduplicateWeb.ConnCase
 
   import Deduplicate.UsersFixtures
+  import Deduplicate.Users.SessionsFixtures
+  import DeduplicateWeb.AuthenticationTestsMacro
 
   alias Deduplicate.Users
 
@@ -29,9 +31,6 @@ defmodule DeduplicateWeb.UserControllerTest do
   end
 
   describe "update/2" do
-    import Deduplicate.UsersFixtures
-    import Deduplicate.Users.SessionsFixtures
-
     setup do
       user = user_fixture()
       token = session_fixture(user)
@@ -77,12 +76,14 @@ defmodule DeduplicateWeb.UserControllerTest do
       # Verify user was not updated.
       assert Users.get_user!(user.user_id) == user
     end
+
+    # Implement authentication test macro.
+    path = Routes.user_path(@endpoint, :delete, "--user_id")
+
+    test_user_authentication(:post, path)
   end
 
   describe "delete/2" do
-    import Deduplicate.UsersFixtures
-    import Deduplicate.Users.SessionsFixtures
-
     setup do
       user = user_fixture()
       token = session_fixture(user)
@@ -109,5 +110,10 @@ defmodule DeduplicateWeb.UserControllerTest do
         Users.get_user!(user.user_id)
       end
     end
+
+    # Implement authentication test macro.
+    path = Routes.user_path(@endpoint, :delete, "--user_id")
+
+    test_user_authentication(:post, path)
   end
 end
