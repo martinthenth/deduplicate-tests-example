@@ -6,38 +6,33 @@ defmodule DeduplicateWeb.UserController do
 
   action_fallback DeduplicateWeb.FallbackController
 
-  def index(conn, _params) do
-    users = Users.list_users()
-    render(conn, "index.json", users: users)
-  end
-
+  @doc """
+  Creates a user with the given params.
+  """
+  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t() | {:error, Ecto.Changeset.t()}
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Users.create_user(user_params) do
+    with {:ok, %User{} = created_user} <- Users.create_user(user_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> render("show.json", user: created_user)
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-    render(conn, "show.json", user: user)
-  end
+  def create(_conn, _params), do: {:error, :bad_request}
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Users.get_user!(id)
+  @doc """
+  Updates a user with the given params.
+  """
+  @spec update(Plug.Conn.t(), map) :: Plug.Conn.t() | {:error, Ecto.Changeset.t()}
+  def update(conn, %{"user" => user_params}) do
+    user = conn.assigns.current_user
 
-    with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
+    with {:ok, %User{} = updated_user} <- Users.update_user(user, user_params) do
+      conn
+      |> put_status(:accepted)
+      |> render("show.json", user: updated_user)
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{}} <- Users.delete_user(user) do
-      send_resp(conn, :no_content, "")
-    end
-  end
+  def update(_conn, _params), do: {:error, :bad_request}
 end
