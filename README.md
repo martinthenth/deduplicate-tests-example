@@ -2,6 +2,7 @@
 
 This repo contains a working example for deduplicating authentication tests in Phoenix by using Elixir `macros`. You can read the accompanying article here:
 - https://medium.com/@m.r.nijboer/deduplicating-authentication-and-authorization-tests-in-elixir-and-phoenix-using-macros-5ed7fe5c282d
+- https://dev.to/martinthenth/deduplicating-authentication-and-authorization-tests-in-elixir-and-phoenix-using-macros-5c2c
 
 A summary: The number of authentication and authorization tests for Phoenix controller actions can go into the hundreds and thousands. The problem is that these tests are near-identical, and manually writing and updating these tests is error-prone and laborous. Instead, I offer a solution using Elixir `macros` that generate these tests for us.
 
